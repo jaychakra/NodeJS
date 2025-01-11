@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "jest": "^29.7.0"
+  },
+  "name": "unit-testing-in-node-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
