@@ -46,10 +46,9 @@ jobs:
       if: always()  
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
-        working-directory: ./UnitTesting/Exercises/3_book_service
         script: |
           const fs = require('fs');
-          const testOutput = fs.readFileSync('test_output.log', 'utf8');
+          const testOutput = fs.readFileSync('./UnitTesting/Exercises/3_book_service/test_output.log', 'utf8');
           
           const comment = `## Test Results
 
