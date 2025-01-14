@@ -21,6 +21,7 @@ describe('BookController Unit Tests', () => {
     Book.create.mockResolvedValue(createdBook);
 
     const result = await BookController.createBook(bookData);
+    expect(Book.create).toHaveBeenCalled();
     expect(Book.create).toHaveBeenCalledWith(bookData);
     expect(result).toEqual(createdBook);
   });
@@ -31,10 +32,18 @@ describe('BookController Unit Tests', () => {
       { title: 'Book 2', author: 'Author 2', publishedYear: 2010, genre: 'Non-Fiction' },
     ];
 
+    // mockReturnValue(value) v/s  mockResolvedValue(value)
+    // Link: https://jestjs.io/docs/mock-function-api#mockfnmockreturnvaluevalue
+
+
     Book.find.mockResolvedValue(mockBooks);
 
     const result = await BookController.getAllBooks();
     expect(Book.find).toHaveBeenCalled();
+    //toEqual vs toBe
+    //.toBe compares primitive values or checks referential identity of object instances while toEqual looks for deep equailty.
+    // expect({ name: 'john doe' }).toEqual({ name: 'john doe'}); // PASSES
+    // expect({ name: 'john doe' }).toBe({ name: 'john doe'});    // FAILS
     expect(result).toEqual(mockBooks);
   });
 
