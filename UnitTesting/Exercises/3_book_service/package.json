@@ -12,7 +12,7 @@
   },
   "jest": {
     "collectCoverage": true, 
-    "coverageReport": ["json", "lcov", "text", "clover"],
+    "coverageReporters": ["json", "lcov", "text", "clover"],
     "coverageDirectory": "coverage",
     "coverageThreshold": {
       "global": {
