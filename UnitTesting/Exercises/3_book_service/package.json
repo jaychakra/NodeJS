@@ -10,6 +10,20 @@
     "test": "jest",
     "start": "node src/server.js"
   },
+  "jest": {
+    "collectCoverage": true, 
+    "coverageReport": ["json", "lcov", "text", "clover"],
+    "coverageDirectory": "coverage",
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100, 
+        "lines": 100,
+        "statements": 100
+      }
+    }
+
+  },
   "author": "Jay Chakra",
   "license": "ISC",
   "dependencies": {
