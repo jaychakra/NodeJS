@@ -4,7 +4,7 @@ jest.mock("./db", () => ({
     getOrders: jest.fn(),
   }));
   
-  const db = require("./db"); // The mocked db
+  // const db = require("./db"); // The mocked db
   const Orders = require("./orders");
   
   describe("Orders Tests with Mocked DB", () => {
@@ -14,7 +14,6 @@ jest.mock("./db", () => ({
       db.addOrder.mockClear();
       db.getOrders.mockClear();
     });
-  2a2aa
     test("should create a new order", () => {
       db.addOrder.mockImplementation((order) => {
         db.orders.push(order);

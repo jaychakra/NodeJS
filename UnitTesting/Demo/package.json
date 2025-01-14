@@ -1,0 +1,14 @@
+{
+  "name": "unit-testing",
+  "version": "1.0.0",
+  "main": "util.js",
+  "scripts": {
+    "test": "jest --watchAll"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "jest": "^29.7.0"
+  }
+}
