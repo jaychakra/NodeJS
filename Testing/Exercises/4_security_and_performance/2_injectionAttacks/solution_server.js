@@ -42,7 +42,8 @@ db.serialize(async () => {
     (?, ?, 'alice@blog.com', 0, '4532-xxxx-xxxx-5678', 'sk_live_user_123456')`,
     ['admin', adminHash, 'alice', aliceHash]);
     
-  // Same blog_posts data as before...
+    db.run(`INSERT INTO blog_posts (user_id, title, content) VALUES 
+      (1, 'Welcome to our blog!', 'This is our first post. Feel free to test comment!')`);
 });
 
 app.use(express.static(path.join(__dirname)));
