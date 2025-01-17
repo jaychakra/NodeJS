@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Injection Demo</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #fff;
+      margin-top: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 80%;
+      max-width: 400px;
+      margin: 15px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .section:hover {
+      transform: scale(1.05);
+    }
+
+    .section h2 {
+      margin-bottom: 10px;
+      color: #ff6363;
+    }
+
+    .section input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .section button {
+      background: #ff6363;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .section button:hover {
+      background: #e05555;
+    }
+
+    .result {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background: #eaf6e8;
+      border: 1px solid #a2d5a7;
+      border-radius: 5px;
+      color: #388e3c;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>SQL Injection Attack Demo</h1>
+
+  <div class="container">
+    <!-- 1=1 Attack Section -->
+    <div class="section">
+      <h2>1=1 Attack</h2>
+      <input type="text" id="input-1-1" placeholder="Enter payload for 1=1 attack">
+      <button onclick="performAttack('input-1-1', '/login', 'result-1-1')">Submit</button>
+      <div id="result-1-1" class="result"></div>
+    </div>
+
+    <!-- Query Stacking Attack Section -->
+    <div class="section">
+      <h2>Query Stacking</h2>
+      <input type="text" id="input-query-stacking" placeholder="Enter payload for query stacking">
+      <button onclick="performAttack('input-query-stacking', '/search', 'result-query-stacking')">Submit</button>
+      <div id="result-query-stacking" class="result"></div>
+    </div>
+
+    <!-- Exfiltration Attack Section -->
+    <div class="section">
+      <h2>Exfiltration</h2>
+      <input type="text" id="input-exfiltration" placeholder="Enter payload for exfiltration">
+      <button onclick="performAttack('input-exfiltration', '/books', 'result-exfiltration')">Submit</button>
+      <div id="result-exfiltration" class="result"></div>
+    </div>
+  </div>
+
+  <script>
+    function performAttack(inputId, endpoint, resultId) {
+      const input = document.getElementById(inputId).value;
+      const resultDiv = document.getElementById(resultId);
+
+      // Send request to server
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payload: input })
+      })
+        .then(response => response.json())
+        .then(data => {
+          resultDiv.style.display = 'block';
+          resultDiv.innerHTML = `<strong>Response:</strong> ${JSON.stringify(data)}`;
+        })
+        .catch(err => {
+          resultDiv.style.display = 'block';
+          resultDiv.innerHTML = `<strong>Error:</strong> ${err.message}`;
+        });
+    }
+  </script>
+</body>
+</html>
