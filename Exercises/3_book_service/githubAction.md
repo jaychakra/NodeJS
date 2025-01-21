@@ -14,4 +14,4 @@ There are others like Circle CI, Travis
 Let's see that in an action. 
 - create a .gthub directory
 - files are written in yml format (yet another markup) similar to python
-- 
+- Test the github integration!!
