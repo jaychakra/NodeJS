@@ -20,11 +20,11 @@ jobs:
         node-version: '18.x'
     
     - name: Navigate to target directory
-      run: cd ./UnitTesting/Exercises/3_book_service
+      run: cd ./Exercises/3_book_service
 
         
     - name: Install dependencies
-      working-directory: ./UnitTesting/Exercises/3_book_service  
+      working-directory: ./Exercises/3_book_service  
       run: |
         if [ -f package-lock.json ]; then
           npm ci
@@ -34,7 +34,7 @@ jobs:
       
     - name: Run tests
       id: test
-      working-directory: ./UnitTesting/Exercises/3_book_service
+      working-directory: ./Exercises/3_book_service
       run: |
         echo "test_output<<EOF" >> $GITHUB_OUTPUT
         npm test 2>&1 | tee test_output.log
@@ -48,7 +48,7 @@ jobs:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
           const fs = require('fs');
-          const testOutput = fs.readFileSync('./UnitTesting/Exercises/3_book_service/test_output.log', 'utf8');
+          const testOutput = fs.readFileSync('./Exercises/3_book_service/test_output.log', 'utf8');
           
           const comment = `## Test Results
 
