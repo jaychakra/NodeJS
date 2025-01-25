@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const path = require('path');
@@ -11,20 +10,12 @@ const SECRET_KEY = 'your_secret_key';
 const REDIS_HOST = 'localhost';
 const REDIS_PORT = 6379;
 
-let chatrooms = {
-    room1: [],
-    room2: [],
-    room3: [],
-    room4: [],
-};
-
 // Connect to Redis
 const redisClient = redis.createClient({
     host: REDIS_HOST,
     port: REDIS_PORT
 });
 
-// Redis promises support (v4+)
 redisClient.connect();
 
 redisClient.on('error', (err) => {
@@ -33,27 +24,24 @@ redisClient.on('error', (err) => {
 
 async function createServer({ hostname = 'localhost', port }) {
     const app = express();
-    // Serve the HTML page
+
     app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname, 'index.html'));
     });
-    
+
     const server = http.createServer(app);
     const io = new Server(server, {
         cors: { origin: '*' }
     });
 
-    // Integrate Redis pub/sub with Socket.IO
     io.adapter(socketIoRedis({ host: REDIS_HOST, port: REDIS_PORT }));
 
     app.use(express.json());
 
-    // Health check endpoint
     app.get('/ping', (req, res) => {
         res.status(200).send('pong');
     });
 
-    // Mock login endpoint
     app.post('/login', (req, res) => {
         const { username, password } = req.body;
         if (username === password) {
@@ -64,7 +52,6 @@ async function createServer({ hostname = 'localhost', port }) {
         }
     });
 
-    // Socket.IO authentication middleware
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
         if (!token) {
@@ -79,7 +66,6 @@ async function createServer({ hostname = 'localhost', port }) {
         }
     });
 
-    // Socket.IO connection handling
     io.on('connection', (socket) => {
         console.log(`${socket.user.username} connected`);
 
@@ -95,7 +81,7 @@ async function createServer({ hostname = 'localhost', port }) {
                     source: `port-${port}`,
                 };
                 await redisClient.rPush(`chatroom:${currentRoom}`, JSON.stringify(leaveMessage));
-                socket.to(currentRoom).emit('message', leaveMessage);
+                io.in(currentRoom).emit('message', leaveMessage);
             }
 
             socket.join(room);
@@ -114,7 +100,7 @@ async function createServer({ hostname = 'localhost', port }) {
                 source: `port-${port}`,
             };
             await redisClient.rPush(`chatroom:${room}`, JSON.stringify(joinMessage));
-            socket.to(room).emit('message', joinMessage);
+            io.in(room).emit('message', joinMessage);
         });
 
         socket.on('message', async (message) => {
@@ -124,8 +110,8 @@ async function createServer({ hostname = 'localhost', port }) {
                 const chatMessage = { username: socket.user.username, message, source: `port-${port}` };
                 await redisClient.rPush(`chatroom:${room}`, JSON.stringify(chatMessage));
 
-                // Publish the message to Redis
-                socket.to(room).emit('message', chatMessage);
+                // Emit message to all clients in the room, including the sender
+                io.in(room).emit('message', chatMessage);
             }
         });
 
@@ -139,7 +125,7 @@ async function createServer({ hostname = 'localhost', port }) {
                     source: `port-${port}`,
                 };
                 await redisClient.rPush(`chatroom:${room}`, JSON.stringify(leaveMessage));
-                socket.to(room).emit('message', leaveMessage);
+                io.in(room).emit('message', leaveMessage);
             }
             console.log(`${socket.user.username} disconnected`);
         });
@@ -153,7 +139,6 @@ async function createServer({ hostname = 'localhost', port }) {
 }
 
 const port = process.argv[2];
-console.log(process.argv);
 
 if (!port) {
     console.error('Port number is required. Usage: node server.js <port>');
